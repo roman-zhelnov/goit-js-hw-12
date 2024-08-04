@@ -8,6 +8,23 @@
     <link rel="stylesheet" href="./css/styles.css" />
   </head>
   <body>
+    <section>
+      <div class="container">
+        <form class="form-gallery">
+          <div class="form-wrap-gallery">
+            <input
+              type="text"
+              class="form-gallery-input"
+              name="query"
+              placeholder="Search-images..."
+            />
+          </div>
+          <button type="submit" class="btn-gallery">Search</button>
+        </form>
+        <span class="visually-hidden loader"></span>
+        <ul class="gallery-list"></ul>
+      </div>
+    </section>
     <script type="module" src="./main.js"></script>
   </body>
 </html>
