@@ -7,9 +7,28 @@
     <title>goit-js-hw-12</title>
     
     <script type="module" crossorigin src="/goit-js-hw-12/commonHelpers.js"></script>
+    <link rel="modulepreload" crossorigin href="/goit-js-hw-12/assets/vendor-8c59ed88.js">
+    <link rel="stylesheet" href="/goit-js-hw-12/assets/vendor-1cd1f9d9.css">
     <link rel="stylesheet" href="/goit-js-hw-12/assets/index-c9db6b34.css">
   </head>
   <body>
+    <section>
+      <div class="container">
+        <form class="form-gallery">
+          <div class="form-wrap-gallery">
+            <input
+              type="text"
+              class="form-gallery-input"
+              name="query"
+              placeholder="Search-images..."
+            />
+          </div>
+          <button type="submit" class="btn-gallery">Search</button>
+        </form>
+        <span class="visually-hidden loader"></span>
+        <ul class="gallery-list"></ul>
+      </div>
+    </section>
     
   </body>
 </html>
