@@ -58,7 +58,7 @@
   padding-left: 16px;
 }
 
-.btn-gallery {
+button {
   display: flex;
   justify-content: center;
   border: none;
@@ -75,7 +75,7 @@
   color: #fff;
 }
 
-.btn-gallery:hover {
+button:hover {
   background: #6c8cff;
 }
 
@@ -128,6 +128,11 @@
   line-height: 133%;
   letter-spacing: 0.04em;
   color: #2e2f42;
+}
+
+.btn {
+  width: auto;
+  margin: 0 auto;
 }
 
 .loader {
