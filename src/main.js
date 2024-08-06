@@ -12,12 +12,14 @@ const moreImageBtn = document.querySelector('.btn');
 let page = 1;
 let limit = 15;
 let totalPages = 0;
+let lastSearchTerm = '';
 
 formEl.addEventListener('submit', handleSubmit);
 moreImageBtn.addEventListener('click', handleClick);
 
 function handleSubmit(event) {
   event.preventDefault();
+  page = 1;
   moreImageBtn.classList.add('visually-hidden');
   galleryListEl.innerHTML = '';
   loaderEl.classList.remove('visually-hidden');
@@ -26,6 +28,8 @@ function handleSubmit(event) {
     loaderEl.classList.add('visually-hidden');
     return;
   }
+
+  lastSearchTerm = inputValue;
 
   searchImagesByQuery(inputValue, page)
     .then(images => {
@@ -66,22 +70,35 @@ function handleSubmit(event) {
 
 async function handleClick() {
   page += 1;
-  let inputValue = inputEl.value.trim().toLowerCase();
-  const newPage = await searchImagesByQuery(inputValue, page);
-  renderImagesCards(newPage, galleryListEl);
+  loaderEl.classList.remove('visually-hidden');
+  moreImageBtn.classList.add('visually-hidden');
 
-  const firstCard = document.querySelector('.gallery-list li');
-  const cardHeight = firstCard.getBoundingClientRect().height;
-  window.scrollBy({
-    top: cardHeight * 2,
-    behavior: 'smooth',
-  });
+  try {
+    const newPage = await searchImagesByQuery(lastSearchTerm, page);
+    renderImagesCards(newPage, galleryListEl);
 
-  if (page >= totalPages) {
-    moreImageBtn.classList.add('visually-hidden');
-    return iziToast.error({
-      position: 'topRight',
-      message: "We're sorry, there are no more posts to load",
+    const firstCard = document.querySelector('.gallery-list li');
+    const cardHeight = firstCard.getBoundingClientRect().height;
+    window.scrollBy({
+      top: cardHeight * 2,
+      behavior: 'smooth',
     });
+
+    if (page >= totalPages) {
+      iziToast.error({
+        position: 'topRight',
+        message: "We're sorry, there are no more posts to load",
+      });
+    } else {
+      moreImageBtn.classList.remove('visually-hidden');
+    }
+  } catch (error) {
+    iziToast.error({
+      position: 'topRight',
+      message: 'Sorry, there was an error loading more images!',
+    });
+    console.error(error);
+  } finally {
+    loaderEl.classList.add('visually-hidden');
   }
 }
