@@ -17,12 +17,13 @@ let lastSearchTerm = '';
 formEl.addEventListener('submit', handleSubmit);
 moreImageBtn.addEventListener('click', handleClick);
 
-function handleSubmit(event) {
+async function handleSubmit(event) {
   event.preventDefault();
   page = 1;
   moreImageBtn.classList.add('visually-hidden');
   galleryListEl.innerHTML = '';
   loaderEl.classList.remove('visually-hidden');
+
   let inputValue = inputEl.value.trim().toLowerCase();
   if (inputValue === '') {
     loaderEl.classList.add('visually-hidden');
@@ -31,41 +32,40 @@ function handleSubmit(event) {
 
   lastSearchTerm = inputValue;
 
-  searchImagesByQuery(inputValue, page)
-    .then(images => {
-      totalPages = Math.ceil(images.totalHits / limit);
-      loaderEl.classList.add('visually-hidden');
-      if (images.hits.length === 0) {
-        iziToast.error({
-          maxWidth: '370px',
-          position: 'topRight',
-          messageColor: 'white',
-          backgroundColor: 'red',
-          message:
-            'Sorry, there are no images matching your search query. Please try again!',
-        });
-      } else {
-        renderImagesCards(images, galleryListEl);
-        if (page < totalPages) {
-          moreImageBtn.classList.remove('visually-hidden');
-        }
-      }
-    })
-    .catch(error => {
-      loaderEl.classList.add('visually-hidden');
+  try {
+    const images = await searchImagesByQuery(inputValue, page);
+    totalPages = Math.ceil(images.totalHits / limit);
+    loaderEl.classList.add('visually-hidden');
+
+    if (images.hits.length === 0) {
       iziToast.error({
         maxWidth: '370px',
         position: 'topRight',
         messageColor: 'white',
         backgroundColor: 'red',
-        message: ' Sorry, there was an error connecting to the server!',
+        message:
+          'Sorry, there are no images matching your search query. Please try again!',
       });
-      console.error(error);
-    })
-    .finally(() => {
-      inputEl.value = '';
-      event.target.reset();
+    } else {
+      renderImagesCards(images, galleryListEl);
+      if (page < totalPages) {
+        moreImageBtn.classList.remove('visually-hidden');
+      }
+    }
+  } catch (error) {
+    loaderEl.classList.add('visually-hidden');
+    iziToast.error({
+      maxWidth: '370px',
+      position: 'topRight',
+      messageColor: 'white',
+      backgroundColor: 'red',
+      message: ' Sorry, there was an error connecting to the server!',
     });
+    console.error(error);
+  } finally {
+    inputEl.value = '';
+    event.target.reset();
+  }
 }
 
 async function handleClick() {
